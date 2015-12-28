@@ -1,6 +1,8 @@
 import pynbody
 import numpy as np
 
+from . import conf
+
 
 def get_halfmass_radius(halo):
     """Return radius at which half the stellar mass of the halo is contained"""
@@ -17,11 +19,12 @@ def get_halfmass_radius(halo):
             return np.mean(p["rbins"][i-1:i+1])
 
 
-def halfmass_halo(halo):
+def get_halfmass_disc(halo):
     """Takes a halo and returns a disc containing half the stellar mass"""
     r = get_halfmass_radius(halo)
-    with pynbody.analysis.halo.center(halo, mode="pot"), pynbody.analysis.angmom.faceon(halo):
-        return pynbody.filt.Disc(r, height)
+    cen = pynbody.analysis.halo.center(halo, mode="pot", retcen=True)
+    with pynbody.analysis.angmom.faceon(halo):
+        return pynbody.filt.Disc(r, height=conf.SLICE_DISC_HEIGHT, cen=cen)
 
 
 def get_velocity_dispersion(halo):
@@ -43,3 +46,24 @@ def get_virial_sphere(halo):
     r = get_halfmass_radius(halo)
     cen = pynbody.analysis.center(halo, retcen=True)
     return halo[pynbody.filt.Sphere(r, cen=cen)]
+
+
+def collect_all(halo):
+    results = {}
+
+    cen = pynbody.analysis.halo.center(halo, mode="pot", retcen=True)
+    aperture = pynbody.filt.Disc(conf.M_STAR_APERTURE, conf.SLICE_DISC_HEIGHT, cen=cen)
+    results["m_star"] = pynbody.halo.SimArray(sum(halo[aperture].s["mass"]), units=halo.s["mass"].units)
+
+    halfmass_disc = get_halfmass_disc(halo)
+    halfmass_halo = halo[halfmass_disc]
+    results["r_eff"] = halfmass_disc.radius
+    results["v_disp"] = get_velocity_dispersion(halfmass_halo)
+
+    sphere = halo[pynbody.filt.Sphere(results["r_eff"], cen=cen)]
+    results["M_total"] = pynbody.halo.SimArray(sum(sphere["mass"]), units=sphere["mass"].units)
+    results["M_s"] = pynbody.halo.SimArray(sum(sphere.s["mass"]), units=sphere["mass"].units)
+    results["M_g"] = pynbody.halo.SimArray(sum(sphere.g["mass"]), units=sphere["mass"].units)
+    results["M_d"] = pynbody.halo.SimArray(sum(sphere.d["mass"]), units=sphere["mass"].units)
+
+    return results
