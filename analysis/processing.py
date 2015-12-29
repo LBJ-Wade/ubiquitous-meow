@@ -80,7 +80,7 @@ def run(sim_run, snapshot_filename):
     except OSError:
         pass
 
-    tipsy_bin_path = apply_totipnat(snapshot_path, os.path.join(output_path, "tipsy.bin"))
+    apply_totipnat(snapshot_path, os.path.join(output_path, "tipsy.bin"))
 
     ahf_output_dir = os.path.join(PROCESSED_DATA_DIR, sim_run, snapshot_filename, "apply_ahf")
     try:

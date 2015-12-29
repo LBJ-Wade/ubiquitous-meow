@@ -1,7 +1,4 @@
 import pynbody
-import numpy as np
-from pynbody import units
-from pynbody.analysis.halo import center_of_mass
 
 
 def load_snapshot_and_halos(snapshot_file):
