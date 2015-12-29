@@ -18,19 +18,19 @@ Now, from inside the virtualenv, install our python dependencies. The dependenci
 pip install numpy
 pip install scipy
 pip install matplotlib
-pip install git+git://github.com/pynbody.pynbody.git
+pip install pynbody
 pip install -r requirements.txt
 ```
 
 
-Tipsy
------
+Totipnat
+--------
 
 [Tipsy](http://www-hpcc.astro.washington.edu/tools/tipsy/tipsy.html) is a tool for reading and visualizing numerical simulation snapshots. We will use it to convert snapshot files into tipsy binaries, so that we can load them up in pynbody as well as feed them into Amiga Halo Finder.
 
-Follow the instructions in the link to install Tipsy.
+Pynbody and Amiga Halo Finder reads files in a tipsy binary format. We won't need tipsy itself, but will need to install `totipnat` in order to convert the snapshot files to tipsy binary.
 
-TODO: Include instruction to install tipsy at a predefined destination that can be used by the python code.
+Installing totipnat can be done by cloning the [tipsy_tools github](https://github.com/N-BodyShop/tipsy_tools) and running `make`. The `totipnat` will be created in the tipsy_tools directory, and can be then moved to your desired location. Wherever you choose, set its path as the variable `TOTIPNAT` in `analysis/conf.py`.
 
 
 Amiga Halo Finder
@@ -38,4 +38,4 @@ Amiga Halo Finder
 
 [Amiga Halo Finder (AHF)](http://popia.ft.uam.es/AHF/Download.html) is a tool that reads tipsy binary files and summarizes the gravitationally bound objects within the snapshot. We will use in preprocessing of our data to produce halos that we will analyze in pynbody. Download AHF at the link and follow the installation instructions.
 
-TODO: Include instruction to install AHF at a predefined destination that can be used by the python code.
+Install by downloading the tar file, unzipping it using `tar -xzvf ahf-v1.0-084`, entering the directory, and running `make`. It will create a binary called `AHF-v1.0-084` in the `bin` directory, which you can move to your desired location. Wherever you choose, set that path as the variable `AHF` in `analysis/conf.py`.

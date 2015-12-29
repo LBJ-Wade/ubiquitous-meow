@@ -5,7 +5,7 @@ Functions for Argonaut Simulation snapshot processing
 import os
 import shutil
 
-from . import conf
+from . import conf, templates
 
 
 DATA_DIR = conf.DATA_DIR
@@ -20,9 +20,9 @@ def apply_totipnat(snapshot_input_file, tipsy_output_file):
     tipsy_output_file (str): desired destination for output tipsy binary
     """
     exit_val = os.system("{totipnat} < {snapshot} > {dest}".format(
-            totipnat=conf.TIPSY_CONVERTER,
+            totipnat=conf.TOTIPNAT,
             snapshot=snapshot_input_file,
-            dest=tipsy_output_file)
+            dest=tipsy_output_file))
     if exit_val != 0:
         raise Exception("Conversion to tipsy failed. Check snapshot file permissions.")
 
@@ -30,7 +30,7 @@ def apply_totipnat(snapshot_input_file, tipsy_output_file):
 
 def _generate_ahf_input_file(dest_dir, tipsy_input_file):
     """Geneartes ahf params.input from template with desired tipsy input file path"""
-    template = templates["ahf.params.input"]
+    template = templates.get("ahf.params.input")
     input_file_path = os.path.join(dest_dir, "params.input")
 
     with open(input_file_path, "w+") as input_file:
@@ -42,7 +42,7 @@ def _generate_ahf_input_file(dest_dir, tipsy_input_file):
 
 def _generate_gas_file(dest_dir, d_hubble_0):
     """Generates gas.param file for ahf output"""
-    template = template["ahf.gas.param"]
+    template = templates.get("ahf.gas.param")
     gas_file_path = os.path.join(dest_dir, "gas.param")
 
     with open(gas_file_path, "w+") as gas_file:
@@ -59,12 +59,15 @@ def apply_ahf(tipsy_input_file, dest_dir):
     input_file_path = _generate_ahf_input_file(tipsy_input_file, dest_dir)
 
     # setup dest dir by creating directories and copying template files
-    exit_val = os.system("AHF {input_file}".format(input_file=input_file_path))
+    exit_val = os.system("{ahf} {input_file}".format(
+        ahf=conf.AHF,
+        input_file=input_file_path))
     if exit_val != 0:
         raise Exception("AHF failed for tipsy binary {}".format(tipsy_input_file))
 
     # TODO: get dhubble0 somehow, which can be determined from the snapshot's redshift, z
     # maybe use a mapping between redshifts and dhubble0
+    d_hubble_0 = 2.060
     _generate_gas_file(dest_dir, d_hubble_0)
 
 
