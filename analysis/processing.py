@@ -56,7 +56,7 @@ def apply_ahf(tipsy_input_file, dest_dir):
     tipsy_input_file (str): path to tipsy binary to apply ahf to
     dest_dir (str): path to directory to store ahf output files
     """
-    input_file_path = _generate_ahf_input_file(tipsy_input_file, dest_dir)
+    input_file_path = _generate_ahf_input_file(dest_dir, tipsy_input_file)
 
     # setup dest dir by creating directories and copying template files
     exit_val = os.system("{ahf} {input_file}".format(
@@ -80,7 +80,7 @@ def run(sim_run, snapshot_filename):
     except OSError:
         pass
 
-    apply_totipnat(snapshot_path, os.path.join(output_path, "tipsy.bin"))
+    tipsy_bin_path = apply_totipnat(snapshot_path, os.path.join(output_path, "tipsy.bin"))
 
     ahf_output_dir = os.path.join(PROCESSED_DATA_DIR, sim_run, snapshot_filename, "apply_ahf")
     try:
@@ -88,5 +88,5 @@ def run(sim_run, snapshot_filename):
     except OSError:
         pass
 
-    apply_ahf(tispy_bin_path, ahf_output_dir)
+    apply_ahf(tipsy_bin_path, ahf_output_dir)
     shutil.copy(snapshot_path, os.path.join(ahf_output_dir, "ahf"))
