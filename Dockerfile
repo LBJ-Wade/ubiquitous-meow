@@ -6,14 +6,6 @@ RUN apt-get update && \
     apt-get install -y libblas-dev liblapack-dev libatlas-base-dev \
                        gfortran vim
 
-# Clone code repository
-RUN git clone https://github.com/kevinyu/ubiquitous-meow.git $HOME/code
-
-# Pip install python dependencies
-RUN pip install --upgrade cython && \
-    pip install numpy && \
-    pip install -r $HOME/code/requirements.txt
-
 RUN mkdir packages
 
 # Setup totipnat (tipsy binary converter)
@@ -33,14 +25,21 @@ RUN cd packages && \
 ADD build/Makefile.config /packages/ahf-v1.0-084/Makefile.config
 RUN cd packages/ahf-v1.0-084 && \
     make && \
-    ln -s /packages/HOME/ahf-v1.0-084/bin/AHF-v1.0-084 /usr/local/bin/ahf
+    ln -s /packages/ahf-v1.0-084/bin/AHF-v1.0-084 /usr/local/bin/ahf
 ENV AHF /usr/local/bin/ahf
 
-ADD analysis/conf.py $HOME/code/anaylsis/conf.py
+# Clone code repository
+RUN cd / && git clone https://github.com/kevinyu/ubiquitous-meow.git /code
+
+# Pip install python dependencies
+RUN pip install --upgrade cython && \
+    pip install numpy && \
+    pip install -r /code/requirements.txt
+
 ENV DATA_DIR /data
-ENV TEMPLATES_DIR $HOME/code/templates
-RUN rm $HOME/code/Notebooks/analysis && \
-    ln -s $HOME/code/analysis $HOME/code/Notebooks/analysis
+ENV TEMPLATES_DIR /code/templates
+RUN rm /code/Notebooks/analysis && \
+    ln -s /code/analysis /code/Notebooks/analysis
 
 ### From http://jupyter-notebook.readthedocs.org/en/latest/public_server.html
 # Add Tini. Tini operates as a process subreaper for jupyter. This prevents
@@ -51,4 +50,7 @@ RUN chmod +x /usr/bin/tini
 ENTRYPOINT ["/usr/bin/tini", "--"]
 
 EXPOSE 8888
-CMD ["$HOME/code/env/bin/jupyter-notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--notebook-dir=$HOME/code"]
+
+VOLUME /data
+
+CMD jupyter-notebook --port=8888 --no-browser --ip=0.0.0.0 --notebook-dir=/code
