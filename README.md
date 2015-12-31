@@ -1,6 +1,14 @@
 Setup
 =====
 
+Docker
+------
+
+The project is set up to be able to be run in a docker container for easiest setup. Install docker for your system and then run `docker build <your-docker-project-name> .` Learn about docker somewhere else, not here.
+
+Run a container, using the `-v` option to mount your data directory to the container's `/data`.
+ The Jupyter notebook for this project will be running on port 8888 of the container. To find out what port the jupyter server is running on in your system, do `docker ps`, and then head to that location in your browser.
+
 Python Requirements
 -------------------
 
@@ -12,15 +20,17 @@ $ virtualenv env
 
 Enter the virtualenv by running `source env/bin/activate`.
 
-Now, from inside the virtualenv, install our python dependencies. The dependencies are listed in `requirements.txt` and can be installed automatically. However, as of Dec 2015, pynbody has some issues with its automatically installing its dependencies including numpy, scipy, and matplotlib. For this reason, run the following commands in this order:
+Now, from inside the virtualenv, install our python dependencies. The dependencies are listed in `requirements.txt` and can be installed automatically. However, as of Dec 2015, pynbody won't automatically install numpy. For this reason, run the following commands in this order:
 
 ```
 pip install numpy
-pip install scipy
-pip install matplotlib
-pip install pynbody
 pip install -r requirements.txt
 ```
+
+Pynbody Issue on Mac OS X
+-------------------------
+
+When used inside a virtualenv on OS X, matplotlib for some reason cannot use its default backend which causes problems when initializing the pynbody module. In order to be able to import and use pynbody successfully, you need to update the matplotlib backend _before_ importing pynbody at all, for example to "TkAgg". For this reason, make sure that you call `matplotlib.use("TkAgg")` before pynbody is imported for the first time in a process.
 
 
 Totipnat
