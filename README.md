@@ -41,7 +41,7 @@ pip install -r requirements.txt
 Pynbody Issue on Mac OS X
 -------------------------
 
-When used inside a virtualenv on OS X, matplotlib for some reason cannot use its default backend which causes problems when initializing the pynbody module. In order to be able to import and use pynbody successfully, you need to update the matplotlib backend _before_ importing pynbody at all, for example to "TkAgg". For this reason, make sure that you call `matplotlib.use("TkAgg")` before pynbody is imported for the first time in a process.
+When used inside a virtualenv on OS X, matplotlib for some reason cannot use its default backend which causes problems when initializing the pynbody module. In order to be able to import and use pynbody successfully, you need to update the matplotlib backend _before_ importing pynbody at all, for example to "Agg". For this reason, make sure that you call `matplotlib.use("Agg")` before pynbody is imported for the first time in a process.
 
 
 Totipnat
