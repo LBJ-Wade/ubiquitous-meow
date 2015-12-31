@@ -88,4 +88,4 @@ def run(sim_run, snapshot_filename):
         pass
 
     apply_ahf(tipsy_bin_path, ahf_output_dir)
-    os.symlink(snapshot_path, os.path.join(ahf_output_dir, "ahf"))
+    os.symlink(tipys_bin_path, os.path.join(ahf_output_dir, "ahf"))
