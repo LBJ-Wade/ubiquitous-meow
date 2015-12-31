@@ -3,6 +3,7 @@ Functions for Argonaut Simulation snapshot processing
 """
 
 import os
+import re
 
 from . import conf, templates
 
@@ -89,3 +90,25 @@ def run(sim_run, snapshot_filename):
 
     apply_ahf(tipsy_bin_path, ahf_output_dir)
     os.symlink(tipys_bin_path, os.path.join(ahf_output_dir, "ahf"))
+
+
+def summary():
+    """
+    Return a summary of sim data available
+
+    Shows sim runs
+    snapshots in each sim
+    last time each directory processed for snapshot was touched
+    """
+    results = {}
+    for run in os.listdir(RAW_DATA_DIR):
+        snapshot_results = {}
+        snapshots = filter(lambda s: re.match(r"^.*[0-9]{5}$", s), os.listdir(os.path.join(RAW_DATA_DIR, run)))
+        for snapshot in snapshots:
+            try:
+                snapshot_results[snapshot] = os.listdir(
+                    os.path.join(PROCESSED_DATA_DIR, run, snapshot))
+            except OSError:
+                snapshot_results[snapshot] = []
+        results[run] = snapshot_results
+    return results
