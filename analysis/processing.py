@@ -3,6 +3,7 @@ Functions for Argonaut Simulation snapshot processing
 """
 
 import os
+import shutil
 import re
 
 from . import conf, templates
@@ -89,7 +90,10 @@ def run(sim_run, snapshot_filename):
         pass
 
     apply_ahf(tipsy_bin_path, ahf_output_dir)
-    os.symlink(tipsy_bin_path, os.path.join(ahf_output_dir, "ahf"))
+    try:
+        os.symlink(tipsy_bin_path, os.path.join(ahf_output_dir, "ahf"))
+    except OSError:
+        shutil.copy(tipsy_bin_path, os.path.join(ahf_output_dir, "ahf"))
 
 
 def summary():
