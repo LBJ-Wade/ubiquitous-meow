@@ -9,6 +9,17 @@ The project is set up to be able to be run in a docker container for easiest set
 Run a container, using the `-v` option to mount your data directory to the container's `/data`.
  The Jupyter notebook for this project will be running on port 8888 of the container. To find out what port the jupyter server is running on in your system, do `docker ps`, and then head to that location in your browser.
 
+If you are using a VM and have your data directory on an external drive, you need to mount that drive in your VM to access it in the container. To do that with docker-machine on mac, with the VM stopped run
+
+`VBoxManage sharedfolder add default --name Volumes  --hostpath /Volumes --automount`
+
+Then start the default VM, ssh into it using `docker-machine ssh default`, and run the following two commands (copied from [here](https://github.com/aaronbbrown/docker_home/blob/master/dm_run#L62)).
+
+```
+$ sudo mkdir -p /Volumes
+$ sudo mount -t vboxsf Volumes /Volumes
+```
+
 Python Requirements
 -------------------
 
