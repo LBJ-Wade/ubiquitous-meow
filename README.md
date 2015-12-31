@@ -17,7 +17,7 @@ Then start the default VM, ssh into it using `docker-machine ssh default`, and r
 
 ```
 $ sudo mkdir -p /Volumes
-$ sudo mount -t vboxsf Volumes /Volumes
+$ sudo mount -t vboxsf -o rw,dmode=777,fmode=777 Volumes /Volumes
 ```
 
 Python Requirements
